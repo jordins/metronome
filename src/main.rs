@@ -3,20 +3,22 @@ use std::time;
 
 fn main() {
     let bpm = 120;
-    let time_signature = 4;
+    let time_signatures: Vec<u32> = vec![4, 5, 3];
     let beat_player = get_beat_player(BeatPlayerSelection::Audio);
 
     println!(
-        "Starting metronome at {} bpm and {} beats per bar",
-        bpm, time_signature
+        "Starting metronome at {} bpm and {:?} beats per bar",
+        bpm, time_signatures
     );
 
     thread::spawn(move || loop {
-        let mut beat_counter = 0;
-        for _i in 0..time_signature {
-            sleep(time::Duration::from_millis(bpm_to_ms(bpm)));
-            beat_counter += 1;
-            beat_player.play(beat_counter);
+        for t in &time_signatures {
+            let mut beat_counter = 0;
+            for _i in 0..*t {
+                sleep(time::Duration::from_millis(bpm_to_ms(bpm)));
+                beat_counter += 1;
+                beat_player.play(beat_counter);
+            }
         }
     });
 
